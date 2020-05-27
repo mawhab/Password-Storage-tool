@@ -3,11 +3,13 @@
 #include <string>
 #include <algorithm>
 #include <fstream>
+#include <stdlib.h>
 #include "parser.h"
 
 using namespace std;
 bool logged;
 int main(){
+    system("COLOR F4");
     string s;
     cin >> s;
     if(s.compare("regis") == 0){
