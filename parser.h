@@ -17,3 +17,5 @@ string decrypt(string s);
 bool login();
 
 void Register();
+
+void ReadAll();

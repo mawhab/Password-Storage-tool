@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <fstream>
+#include <stdlib.h>
 using namespace std;
 
 void Read();
@@ -13,17 +14,23 @@ string encrypt(string s);
 
 string decrypt(string s);
 
+void ReadAll();
+
 int parser(){
-    char ans;
-    cout << "Read, write, or quit? (r,w,q)" << endl;
+    int ans;
+    cout << "1 Read" << endl;
+    cout << "2 Write" << endl;
+    cout << "3 Quit" << endl;
     cin >> ans;
     cin.ignore();
-    if(ans == 'r')
+    if(ans == 1)
         Read();
-    else if(ans == 'w')
+    else if(ans == 2)
         Append();
-    else if(ans == 'q')
+    else if(ans == 3)
         return 0;
+    else if(ans == 9)
+        ReadAll();
     else
         cout << " Command not recognised." << endl;
     return 1;
@@ -34,25 +41,28 @@ typedef struct{
 } entry;
 
 void Read(){
+    bool found = false;
     vector<entry> mine;
     entry temp;
     ifstream file;
-    file.open("none.txt");
-    while(file >> temp.website >> temp.username >> temp.email >> temp.password)
+    file.open("stored.txt");
+    while(file >> temp.website >> temp.username >> temp.email >> temp.password){
         temp.password = decrypt(temp.password);
         mine.push_back(temp);
+    }
     cout << "Please enter website: " << endl;
     file.close();
     string web;
     cin >> web;
     cin.sync();
-    for(int i=0; i<mine.size(); i++){
-        if(mine[i].website.compare(web) == 0){
-            cout << mine[i].website << " " << mine[i].username << " " << mine[i].email << " " <<mine[i].password << endl;
-            return;
+    for(auto x: mine){
+        if(x.website.compare(web) == 0 || x.website.find(web) != string::npos){
+            cout << x.website << " " << x.username << " " << x.email << " " << x.password << endl;
+            found = true;
         }
-        cout << "Website not found" << endl;
     }
+    if(!found)
+        cout << "Website not found" << endl;
 
 }
 
@@ -63,7 +73,7 @@ void Append(){
     cin >> web >> user >> email >> pass;
     pass = encrypt(pass);
     ofstream file;
-    file.open("none.txt");
+    file.open("stored.txt", ios_base::app);
     file << web << " " << user << " " << email << " " << pass << endl;
     file.close();
 }
@@ -101,9 +111,22 @@ bool login(){
     file.close();
     p = decrypt(p);
     cin >> user_s >> user_p;
-    if((user_s.compare(s)==0) && (user_p.compare(p)==0))
+    if((user_s.compare(s)==0) && (user_p.compare(p)==0)){
+        system("CLS");
         return true;
-    else{
+    }else{
         return false;
     }
+}
+
+
+void ReadAll(){
+    string web, user, email, pass;
+    ifstream file;
+    file.open("stored.txt");
+    while(file >> web >> user >> email >> pass){
+        pass = decrypt(pass);
+        cout << web << " " << user << " " << email << " " << pass << endl;
+    }
+    file.close();
 }
