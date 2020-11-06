@@ -127,6 +127,7 @@ void ReadAll(){
     while(file >> web >> user >> email >> pass){
         pass = decrypt(pass);
         cout << web << " " << user << " " << email << " " << pass << endl;
+        cout << "\n\n" << endl;
     }
     file.close();
 }
